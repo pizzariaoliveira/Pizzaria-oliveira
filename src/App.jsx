@@ -5,8 +5,9 @@ import {
   CFG_KEY, PROD_KEY, BORDAS_KEY, BAIRROS_KEY,
   PEDIDOS_PREFIX, PEDIDOS_INDEX_KEY,
   DEFAULT_CONFIG, DEFAULT_BORDAS, DEFAULT_BAIRROS, DEFAULT_PRODUTOS,
-  CATEGORIA_ICONES, brl, uid, styles,
+  CATEGORIA_ICONES, brl, uid,
 } from "./constants";
+import { styles } from "./styles";
 
 export default function App() {
   const [tela, setTela] = useState("cliente");
