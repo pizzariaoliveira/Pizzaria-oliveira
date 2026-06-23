@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { uploadFotoProduto } from "./supabaseClient";
-import { brl, uid, styles } from "./constants";
-
+import { brl, uid } from "./constants";
+import { styles } from "./styles";
 /* ───── Switch ───── */
 export function Switch({ checked, onChange }) {
   return (
