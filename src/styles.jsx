@@ -46,4 +46,4 @@ export const styles = {
   headerAdmin: { background: "#1a1a1a", boxShadow: "0 2px 12px rgba(0,0,0,0.4)", borderBottom: "2px solid #2a4a2e", position: "sticky", top: 0, zIndex: 100 },
   headerAdminRow: { maxWidth: 760, margin: "0 auto", padding: "12px 16px 0", display: "flex", alignItems: "center", gap: 10 },
   logoCircleAdmin: { width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg, #2ecc40 0%, #1e8e2c 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19, flexShrink: 0, boxShadow: "0 4px 12px rgba(46,204,64,0.25)" },
-  adminTitulo: { fontSize: 18, fontWeight: 800, color: "#2ecc40" },
+  adminTitulo: { fontSize: 18, fontWeight: 800, color: "#2ecc40" }
