@@ -214,7 +214,7 @@ function FinalizarEntrega({ config, bairros, carrinho, totalGeral, enviando, set
       const indice = await loadData(PEDIDOS_INDEX_KEY, []);
       await saveData(PEDIDOS_INDEX_KEY, [...(indice || []), pedidoId]);
     } catch { /* segue */ }
-    const numero = (config.whatsapp || "").replace(/\D/g, "");
+    const numero = (config.whatsapp || "").replace(/\D/g, "") || "5512991119914";
     window.open(numero ? `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     setEnviando(false);
     onPedidoEnviado();
