@@ -1,4 +1,7 @@
 export const stylesB = {
+itemInfoBox: { background: "#111", borderRadius: 12, overflow: "hidden", marginTop: 10, border: "1px solid #2a2a2a" },
+itemInfoFoto: { width: "100%", height: 140, objectFit: "cover", display: "block" },
+itemInfoDesc: { fontSize: 13, color: "#9a9a9a", padding: "10px 12px", lineHeight: 1.5 },
   loginWrap: { display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: 20 },
   loginCard: { background: "#1a1a1a", borderRadius: 20, padding: "32px 26px", maxWidth: 340, width: "100%", textAlign: "center", boxShadow: "0 8px 28px rgba(0,0,0,0.5)", border: "1.5px solid #2a2a2a" },
   loginTitle: { fontSize: 20, fontWeight: 800, marginBottom: 6, color: "#f0f0f0" },
