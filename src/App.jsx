@@ -124,7 +124,16 @@ function TelaCliente({ config, produtos, bordas, bairros, mostrarToast, irParaAd
                   <span style={styles.sectionIcon}>{CATEGORIA_ICONES[cat] || "🍽️"}</span>
                   <span style={styles.sectionTitle}>{cat.toUpperCase()}</span>
                 </div>
-                {item1?.foto && <img src={item1.foto} alt={item1.nome} style={styles.fotoPreview} />}
+                {item1 && (item1.foto || item1.descricao) && (
+  <div style={styles.itemInfoBox}>
+    {item1.foto && (
+      <img src={item1.foto} alt={item1.nome} style={styles.itemInfoFoto} />
+    )}
+    {item1.descricao && (
+      <div style={styles.itemInfoDesc}>{item1.descricao}</div>
+    )}
+  </div>
+)}
                 <div style={styles.fieldLabel}>{pizza ? "Sabor 1:" : "Item:"}</div>
                 <select value={sel.sabor1Id} onChange={(e) => setSel(cat, { sabor1Id: e.target.value })} style={styles.selectInput}>
                   {lista.map((p) => <option key={p.id} value={p.id}>{p.nome} ({brl(p.preco)})</option>)}
