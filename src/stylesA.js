@@ -28,4 +28,13 @@ export const stylesA = {
   carrinhoItemSub: { fontSize: 11.5, color: "#9a9a9a", marginTop: 2 },
   carrinhoItemPreco: { fontWeight: 700, fontSize: 13.5, color: "#2ecc40", whiteSpace: "nowrap" },
   removerLink: { background: "none", border: "none", color: "#ff5c5c", fontSize: 11, fontWeight: 700, cursor: "pointer", marginTop: 4, padding: 0 },
-  totalGeralRow: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 10, paddingTop: 12, borderTop: "1px solid #2a2a2a", fontWeight: 700, fontSize: 15, color: "#
+  totalGeralRow: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 10, paddingTop: 12, borderTop: "1px solid #2a2a2a", fontWeight: 700, fontSize: 15, color: "#f0f0f0" },
+  totalGeralValor: { color: "#2ecc40", fontSize: 19, fontWeight: 800 },
+  totalBoxFinal: { background: "#163320", borderRadius: 10, padding: "14px 16px", textAlign: "center", fontSize: 15, fontWeight: 600, margin: "6px 0 14px", color: "#f0f0f0" },
+  btnEnviarPedido: { width: "100%", background: "#25D366", color: "#fff", border: "none", borderRadius: 12, padding: 16, fontWeight: 700, fontSize: 14.5, cursor: "pointer", fontFamily: "'Poppins', sans-serif", letterSpacing: 0.3 },
+  btnDisabledGreen: { background: "#444", cursor: "not-allowed" },
+  emptyState: { textAlign: "center", padding: "40px 16px", color: "#555", fontSize: 13 },
+  adminLink: { display: "block", margin: "0 auto 20px", fontSize: 10, color: "#444", background: "none", border: "none", cursor: "pointer", fontFamily: "'Poppins', sans-serif", textAlign: "center" },
+  erroCampo: { color: "#ff5c5c", fontSize: 11.5, marginTop: 3 },
+  toast: { position: "fixed", top: 18, left: "50%", transform: "translateX(-50%)", background: "#1a1a1a", color: "#fff", padding: "11px 20px", borderRadius: 30, fontSize: 13, fontWeight: 600, zIndex: 999, whiteSpace: "nowrap", boxShadow: "0 6px 20px rgba(0,0,0,0.4)", border: "1px solid #2a2a2a" },
+};
