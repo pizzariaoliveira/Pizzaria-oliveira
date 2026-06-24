@@ -5,7 +5,7 @@ export const BORDAS_KEY = "bordas";
 export const BAIRROS_KEY = "bairros";
 export const PEDIDOS_PREFIX = "pedido_";
 export const PEDIDOS_INDEX_KEY = "pedidos_index";
-
+ 
 export const DEFAULT_CONFIG = {
   nomeLoja: "Pizzaria Oliveira",
   cidade: "Pinda-SP",
