@@ -377,10 +377,12 @@ function AbaConfig({ config, setConfig, mostrarToast }) {
   const [whatsapp, setWhatsapp] = useState(config.whatsapp || "");
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
+  const [fontImpressao, setFontImpressao] = useState(String(config.fontImpressao || 13));
   const numeroLimpo = whatsapp.replace(/\D/g, "");
 
   async function salvar() {
     let senhaFinal = config.senhaAdmin;
+fontImpressao: parseInt(fontImpressao) || 13,
     if (novaSenha.trim()) {
       if (senhaAtual !== config.senhaAdmin) { mostrarToast("⚠️ Senha atual incorreta."); return; }
       senhaFinal = novaSenha.trim();
