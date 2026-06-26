@@ -451,11 +451,6 @@ fontImpressao: parseInt(fontImpressao) || 13,
       {fontImpressao}px
     </span>
   </div>
-  <div style={{ marginTop: 10, background: "#161616", borderRadius: 10, padding: "12px 14px", fontSize: parseInt(fontImpressao), color: "#f0f0f0", lineHeight: 1.6 }}>
-    <div>🍕 <strong>Pizzaria Oliveira</strong></div>
-    <div>• 1x Calabresa — R$ 39,90</div>
-    <div><strong>Total: R$ 44,90</strong></div>
-  </div>
 </div>
       <button style={styles.btn} onClick={salvar}>Salvar configurações</button>
     </div>
