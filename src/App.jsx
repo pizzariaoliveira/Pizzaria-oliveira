@@ -329,7 +329,8 @@ function AbaPedidos({ mostrarToast }) {
     if (win) { win.document.write(html); win.document.close(); win.focus(); win.print(); }
   }
 
-  async function limparTudo() {
+  async function imprimirPedido(p) {
+  const fontSize = config.fontImpressao || 13;
     const indice = await loadData(PEDIDOS_INDEX_KEY, []);
     await Promise.all((indice || []).map((id) => deleteData(PEDIDOS_PREFIX + id)));
     await saveData(PEDIDOS_INDEX_KEY, []);
