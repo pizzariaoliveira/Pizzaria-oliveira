@@ -441,6 +441,21 @@ fontImpressao: parseInt(fontImpressao) || 13,
     <div>• 1x Calabresa — R$ 39,90</div>
     <div><strong>Total: R$ 44,90</strong></div>
   </div>
+</div><div style={styles.card}>
+  <div style={styles.cardTitle}>🖨️ Impressão</div>
+  <label style={styles.label}>Tamanho da fonte (px)</label>
+  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
+    <input type="range" min="10" max="22" value={fontImpressao}
+      onChange={(e) => setFontImpressao(e.target.value)} style={{ flex: 1 }} />
+    <span style={{ fontSize: 15, fontWeight: 700, color: "#2ecc40", minWidth: 36 }}>
+      {fontImpressao}px
+    </span>
+  </div>
+  <div style={{ marginTop: 10, background: "#161616", borderRadius: 10, padding: "12px 14px", fontSize: parseInt(fontImpressao), color: "#f0f0f0", lineHeight: 1.6 }}>
+    <div>🍕 <strong>Pizzaria Oliveira</strong></div>
+    <div>• 1x Calabresa — R$ 39,90</div>
+    <div><strong>Total: R$ 44,90</strong></div>
+  </div>
 </div>
       <button style={styles.btn} onClick={salvar}>Salvar configurações</button>
     </div>
