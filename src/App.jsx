@@ -382,12 +382,15 @@ function AbaConfig({ config, setConfig, mostrarToast }) {
 
   async function salvar() {
     let senhaFinal = config.senhaAdmin;
-fontImpressao: parseInt(fontImpressao) || 13,
     if (novaSenha.trim()) {
       if (senhaAtual !== config.senhaAdmin) { mostrarToast("⚠️ Senha atual incorreta."); return; }
       senhaFinal = novaSenha.trim();
     }
-    await setConfig({ ...config, nomeLoja: nomeLoja.trim() || "Pizzaria Oliveira", cidade: cidade.trim(), telefone: telefone.trim(), aberto, tempoEntrega: tempo.trim() || "40–60 min", whatsapp: numeroLimpo, senhaAdmin: senhaFinal });
+    await setConfig({ ...config, nomeLoja: nomeLoja.trim() || "Pizzaria Oliveira",
+  cidade: cidade.trim(), telefone: telefone.trim(), aberto,
+  tempoEntrega: tempo.trim() || "40–60 min", whatsapp: numeroLimpo,
+  fontImpressao: parseInt(fontImpressao) || 13,
+  senhaAdmin: senhaFinal });
     setSenhaAtual(""); setNovaSenha("");
     mostrarToast("✅ Configurações salvas!");
   }
