@@ -321,7 +321,7 @@ function AbaPedidos({ mostrarToast }) {
 
   useEffect(() => { carregarPedidos(); }, [carregarPedidos]);
 
-  function imprimirPedido(p) {
+ function imprimirPedido(p) {
   const fontSize = config.fontImpressao || 13;
   const data = new Date(p.data).toLocaleString("pt-BR", {
     day: "2-digit", month: "2-digit", year: "numeric",
@@ -350,14 +350,14 @@ function AbaPedidos({ mostrarToast }) {
     <hr/><div style="text-align:center">Obrigado! 🍕</div>
     </body></html>`;
 
-  const win = window.open("", "_blank", "width=420,height=600");
-  if (win) {
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    win.print();
-  }
-}
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `pedido-${p.nome}.html`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+} 
 
   return (
     <div>
