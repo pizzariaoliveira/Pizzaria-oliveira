@@ -411,7 +411,6 @@ function AbaPedidos({ mostrarToast }) {
       {limpando && <ModalConfirm titulo="⚠️ Limpar histórico?" texto="Os pedidos serão apagados permanentemente." onCancelar={() => setLimpando(false)} onConfirmar={limparTudo} textoConfirmar="Apagar" />}
     </div>
   );
-}
 
 /* ── Aba Config ── */
 function AbaConfig({ config, setConfig, mostrarToast }) {
