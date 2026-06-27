@@ -124,20 +124,16 @@ function TelaCliente({ config, produtos, bordas, bairros, mostrarToast, irParaAd
                   <span style={styles.sectionIcon}>{CATEGORIA_ICONES[cat] || "🍽️"}</span>
                   <span style={styles.sectionTitle}>{cat.toUpperCase()}</span>
                 </div>
-                {item1 && (item1.foto || item1.descricao) && (
-  <div style={styles.itemInfoBox}>
-    {item1.foto && (
-      <img src={item1.foto} alt={item1.nome} style={styles.itemInfoFoto} />
-    )}
-    {item1.descricao && (
-      <div style={styles.itemInfoDesc}>{item1.descricao}</div>
-    )}
-  </div>
-)}
                 <div style={styles.fieldLabel}>{pizza ? "Sabor 1:" : "Item:"}</div>
                 <select value={sel.sabor1Id} onChange={(e) => setSel(cat, { sabor1Id: e.target.value })} style={styles.selectInput}>
                   {lista.map((p) => <option key={p.id} value={p.id}>{p.nome} ({brl(p.preco)})</option>)}
                 </select>
+                {item1 && (item1.foto || item1.descricao) && (
+                  <div style={styles.itemInfoBox}>
+                    {item1.foto && <img src={item1.foto} alt={item1.nome} style={styles.itemInfoFoto} />}
+                    {item1.descricao && <div style={styles.itemInfoDesc}>{item1.descricao}</div>}
+                  </div>
+                )}
                 {pizza && (
                   <>
                     <div style={styles.fieldLabel}>Sabor 2 (Opcional):</div>
@@ -222,9 +218,9 @@ function FinalizarEntrega({ config, bairros, carrinho, totalGeral, enviando, set
       await saveData(PEDIDOS_PREFIX + pedidoId, { id: pedidoId, nome, bairro: bairroSel?.nome || "", rua, complemento, itens: carrinho, subtotal: totalGeral, taxa, total: totalComTaxa, pagamento, obsGeral, data: new Date().toISOString() });
       const indice = await loadData(PEDIDOS_INDEX_KEY, []);
       await saveData(PEDIDOS_INDEX_KEY, [...(indice || []), pedidoId]);
-    } catch { /* segue */ }
+    } catch { }
     const numero = (config.whatsapp || "").replace(/\D/g, "") || "5512991119914";
-    window.open(numero ? `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, "_blank");
     setEnviando(false);
     onPedidoEnviado();
     setNome(""); setRua(""); setComplemento(""); setObsGeral("");
@@ -298,7 +294,7 @@ function TelaAdmin({ config, produtos, bordas, bairros, setConfig, setProdutos, 
         {aba === "produtos" && <AbaProdutos produtos={produtos} setProdutos={setProdutos} mostrarToast={mostrarToast} />}
         {aba === "bordas" && <AbaListaSimples titulo="Bordas de Pizza" itens={bordas} setItens={setBordas} mostrarToast={mostrarToast} campoValor="preco" labelValor="Preço adicional (R$)" placeholderNome="Ex: Catupiry, Cheddar..." permitirZero />}
         {aba === "bairros" && <AbaListaSimples titulo="Bairros Atendidos" itens={bairros} setItens={setBairros} mostrarToast={mostrarToast} campoValor="taxa" labelValor="Taxa de entrega (R$)" placeholderNome="Ex: Centro, Crispim..." permitirZero />}
-        {aba === "pedidos" && <AbaPedidos mostrarToast={mostrarToast} />}
+        {aba === "pedidos" && <AbaPedidos config={config} mostrarToast={mostrarToast} />}
         {aba === "config" && <AbaConfig config={config} setConfig={setConfig} mostrarToast={mostrarToast} />}
       </div>
     </div>
@@ -306,7 +302,7 @@ function TelaAdmin({ config, produtos, bordas, bairros, setConfig, setProdutos, 
 }
 
 /* ── Aba Pedidos ── */
-function AbaPedidos({ mostrarToast }) {
+function AbaPedidos({ config, mostrarToast }) {
   const [pedidos, setPedidos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [limpando, setLimpando] = useState(false);
@@ -321,43 +317,51 @@ function AbaPedidos({ mostrarToast }) {
 
   useEffect(() => { carregarPedidos(); }, [carregarPedidos]);
 
- function imprimirPedido(p) {
-  const fontSize = config.fontImpressao || 13;
-  const data = new Date(p.data).toLocaleString("pt-BR", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit",
-  });
-  const itens = (p.itens || []).map((i) =>
-    `• ${i.nome}${i.borda ? ` (Borda: ${i.borda})` : ""}${i.obs ? ` — Obs: ${i.obs}` : ""} ... ${brl(i.total)}`
-  ).join("\n");
+  function imprimirPedido(p) {
+    const fontSize = config.fontImpressao || 13;
+    const data = new Date(p.data).toLocaleString("pt-BR", {
+      day: "2-digit", month: "2-digit", year: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+    const itens = (p.itens || []).map((i) =>
+      `• ${i.nome}${i.borda ? ` (Borda: ${i.borda})` : ""}${i.obs ? ` — Obs: ${i.obs}` : ""} ... ${brl(i.total)}`
+    ).join("\n");
 
-  const html = `<html><head><title>Pedido</title>
-    <style>body{font-family:monospace;font-size:${fontSize}px;padding:16px;max-width:380px;margin:0 auto}hr{border:none;border-top:1px dashed #999;margin:10px 0}.row{display:flex;justify-content:space-between}.total{font-weight:bold}</style>
-    </head><body>
-    <h2 style="text-align:center">🍕 PIZZARIA OLIVEIRA</h2>
-    <div style="text-align:center;color:#555">${data}</div>
-    <hr/><div><b>Cliente:</b> ${p.nome}</div>
-    <div><b>Bairro:</b> ${p.bairro}</div>
-    <div><b>Endereço:</b> ${p.rua}${p.complemento ? ` — ${p.complemento}` : ""}</div>
-    <div><b>Pagamento:</b> ${p.pagamento}</div>
-    <hr/><div><b>Itens:</b></div>
-    <pre style="font-size:${fontSize}px">${itens}</pre>
-    <hr/>
-    <div class="row"><span>Subtotal</span><span>${brl(p.subtotal)}</span></div>
-    <div class="row"><span>Taxa (${p.bairro})</span><span>${brl(p.taxa)}</span></div>
-    <div class="row total"><span>TOTAL</span><span>${brl(p.total)}</span></div>
-    ${p.obsGeral ? `<hr/><div><b>Obs:</b> ${p.obsGeral}</div>` : ""}
-    <hr/><div style="text-align:center">Obrigado! 🍕</div>
-    </body></html>`;
+    const html = `<html><head><meta charset="UTF-8"/><title>Pedido</title>
+      <style>body{font-family:monospace;font-size:${fontSize}px;padding:16px;max-width:380px;margin:0 auto}hr{border:none;border-top:1px dashed #999;margin:10px 0}.row{display:flex;justify-content:space-between}.total{font-weight:bold}</style>
+      </head><body>
+      <h2 style="text-align:center">🍕 PIZZARIA OLIVEIRA</h2>
+      <p style="text-align:center;color:#555">${data}</p>
+      <hr/><p><b>Cliente:</b> ${p.nome}</p>
+      <p><b>Bairro:</b> ${p.bairro}</p>
+      <p><b>Endereço:</b> ${p.rua}${p.complemento ? ` — ${p.complemento}` : ""}</p>
+      <p><b>Pagamento:</b> ${p.pagamento}</p>
+      <hr/><p><b>Itens:</b></p>
+      <pre style="font-size:${fontSize}px;white-space:pre-wrap">${itens}</pre>
+      <hr/>
+      <div class="row"><span>Subtotal</span><span>${brl(p.subtotal)}</span></div>
+      <div class="row"><span>Taxa (${p.bairro})</span><span>${brl(p.taxa)}</span></div>
+      <div class="row total"><span>TOTAL</span><span>${brl(p.total)}</span></div>
+      ${p.obsGeral ? `<hr/><p><b>Obs:</b> ${p.obsGeral}</p>` : ""}
+      <hr/><p style="text-align:center">Obrigado! 🍕</p>
+      </body></html>`;
 
-  const blob = new Blob([html], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `pedido-${p.nome}.html`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
-} 
+    const janela = window.open("about:blank", "_blank");
+    if (janela) {
+      janela.document.open();
+      janela.document.write(html);
+      janela.document.close();
+      janela.onload = () => janela.print();
+    }
+  }
+
+  async function limparTudo() {
+    const indice = await loadData(PEDIDOS_INDEX_KEY, []);
+    await Promise.all((indice || []).map((id) => deleteData(PEDIDOS_PREFIX + id)));
+    await saveData(PEDIDOS_INDEX_KEY, []);
+    setPedidos([]); setLimpando(false);
+    mostrarToast("🗑️ Histórico apagado");
+  }
 
   return (
     <div>
@@ -387,6 +391,7 @@ function AbaPedidos({ mostrarToast }) {
       {limpando && <ModalConfirm titulo="⚠️ Limpar histórico?" texto="Os pedidos serão apagados permanentemente." onCancelar={() => setLimpando(false)} onConfirmar={limparTudo} textoConfirmar="Apagar" />}
     </div>
   );
+}
 
 /* ── Aba Config ── */
 function AbaConfig({ config, setConfig, mostrarToast }) {
@@ -407,11 +412,17 @@ function AbaConfig({ config, setConfig, mostrarToast }) {
       if (senhaAtual !== config.senhaAdmin) { mostrarToast("⚠️ Senha atual incorreta."); return; }
       senhaFinal = novaSenha.trim();
     }
-    await setConfig({ ...config, nomeLoja: nomeLoja.trim() || "Pizzaria Oliveira",
-  cidade: cidade.trim(), telefone: telefone.trim(), aberto,
-  tempoEntrega: tempo.trim() || "40–60 min", whatsapp: numeroLimpo,
-  fontImpressao: parseInt(fontImpressao) || 13,
-  senhaAdmin: senhaFinal });
+    await setConfig({
+      ...config,
+      nomeLoja: nomeLoja.trim() || "Pizzaria Oliveira",
+      cidade: cidade.trim(),
+      telefone: telefone.trim(),
+      aberto,
+      tempoEntrega: tempo.trim() || "40–60 min",
+      whatsapp: numeroLimpo,
+      fontImpressao: parseInt(fontImpressao) || 13,
+      senhaAdmin: senhaFinal,
+    });
     setSenhaAtual(""); setNovaSenha("");
     mostrarToast("✅ Configurações salvas!");
   }
@@ -445,36 +456,23 @@ function AbaConfig({ config, setConfig, mostrarToast }) {
         {numeroLimpo.length >= 10 && <div style={styles.linkPreview}>📲 Pedidos para: <strong>+{numeroLimpo}</strong></div>}
       </div>
       <div style={styles.card}>
+        <div style={styles.cardTitle}>🖨️ Impressão</div>
+        <label style={styles.label}>Tamanho da fonte (px)</label>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
+          <input type="range" min="10" max="22" value={fontImpressao} onChange={(e) => setFontImpressao(e.target.value)} style={{ flex: 1 }} />
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#2ecc40", minWidth: 36 }}>{fontImpressao}px</span>
+        </div>
+        <div style={{ marginTop: 10, background: "#161616", borderRadius: 10, padding: "12px 14px", fontSize: parseInt(fontImpressao), color: "#f0f0f0", lineHeight: 1.6 }}>
+          <div>🍕 <strong>Pizzaria Oliveira</strong></div>
+          <div>• 1x Calabresa — R$ 39,90</div>
+          <div><strong>Total: R$ 44,90</strong></div>
+        </div>
+      </div>
+      <div style={styles.card}>
         <div style={styles.cardTitle}>Senha do painel admin</div>
         <div style={{ marginBottom: 12 }}><label style={styles.label}>Senha atual</label><input type="password" value={senhaAtual} onChange={(e) => setSenhaAtual(e.target.value)} placeholder="Confirme a senha atual" style={styles.input} /></div>
         <div><label style={styles.label}>Nova senha (deixe vazio para manter)</label><input type="password" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} placeholder="Nova senha" style={styles.input} /></div>
       </div>
-<div style={styles.card}>
-  <div style={styles.cardTitle}>🖨️ Impressão</div>
-  <label style={styles.label}>Tamanho da fonte (px)</label>
-  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
-    <input type="range" min="10" max="22" value={fontImpressao}
-      onChange={(e) => setFontImpressao(e.target.value)} style={{ flex: 1 }} />
-    <span style={{ fontSize: 15, fontWeight: 700, color: "#2ecc40", minWidth: 36 }}>
-      {fontImpressao}px
-    </span>
-  </div>
-  <div style={{ marginTop: 10, background: "#161616", borderRadius: 10, padding: "12px 14px", fontSize: parseInt(fontImpressao), color: "#f0f0f0", lineHeight: 1.6 }}>
-    <div>🍕 <strong>Pizzaria Oliveira</strong></div>
-    <div>• 1x Calabresa — R$ 39,90</div>
-    <div><strong>Total: R$ 44,90</strong></div>
-  </div>
-</div><div style={styles.card}>
-  <div style={styles.cardTitle}>🖨️ Impressão</div>
-  <label style={styles.label}>Tamanho da fonte (px)</label>
-  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
-    <input type="range" min="10" max="22" value={fontImpressao}
-      onChange={(e) => setFontImpressao(e.target.value)} style={{ flex: 1 }} />
-    <span style={{ fontSize: 15, fontWeight: 700, color: "#2ecc40", minWidth: 36 }}>
-      {fontImpressao}px
-    </span>
-  </div>
-</div>
       <button style={styles.btn} onClick={salvar}>Salvar configurações</button>
     </div>
   );
