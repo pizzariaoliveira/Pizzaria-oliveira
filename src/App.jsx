@@ -322,6 +322,51 @@ function AbaPedidos({ mostrarToast }) {
   useEffect(() => { carregarPedidos(); }, [carregarPedidos]);
 
   function imprimirPedido(p) {
+  const fontSize = config.fontImpressao || 13;
+  const data = new Date(p.data).toLocaleString("pt-BR", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+  const itens = (p.itens || []).map((i) =>
+    `• ${i.nome}${i.borda ? ` (Borda: ${i.borda})` : ""}${i.obs ? ` — Obs: ${i.obs}` : ""} ... ${brl(i.total)}`
+  ).join("<br/>");
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Pedido</title>
+    <style>
+      body{font-family:monospace;font-size:${fontSize}px;padding:16px;max-width:380px;margin:0 auto}
+      h2{font-size:${fontSize+3}px;text-align:center;margin-bottom:4px}
+      .sub{text-align:center;font-size:${fontSize-1}px;color:#555;margin-bottom:12px}
+      hr{border:none;border-top:1px dashed #999;margin:10px 0}
+      .row{display:flex;justify-content:space-between}
+      .total{font-weight:bold;font-size:${fontSize+1}px}
+    </style></head><body>
+    <h2>🍕 PIZZARIA OLIVEIRA</h2>
+    <div class="sub">${data}</div>
+    <hr/>
+    <div><b>Cliente:</b> ${p.nome}</div>
+    <div><b>Bairro:</b> ${p.bairro}</div>
+    <div><b>Endereço:</b> ${p.rua}${p.complemento?` — ${p.complemento}`:""}</div>
+    <div><b>Pagamento:</b> ${p.pagamento}</div>
+    <hr/>
+    <div><b>Itens:</b></div>
+    <div style="margin:6px 0">${itens}</div>
+    <hr/>
+    <div class="row"><span>Subtotal</span><span>${brl(p.subtotal)}</span></div>
+    <div class="row"><span>Taxa (${p.bairro})</span><span>${brl(p.taxa)}</span></div>
+    <div class="row total"><span>TOTAL</span><span>${brl(p.total)}</span></div>
+    ${p.obsGeral?`<hr/><div><b>Obs:</b> ${p.obsGeral}</div>`:""}
+    <hr/>
+    <div style="text-align:center;font-size:${fontSize-1}px;margin-top:8px">Obrigado! 🍕</div>
+    <script>window.onload=function(){window.print();}<\/script>
+    </body></html>`;
+
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
     const data = new Date(p.data).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
     const itens = (p.itens || []).map((i) => `  • ${i.nome}${i.borda ? ` (Borda: ${i.borda})` : ""}${i.obs ? ` — Obs: ${i.obs}` : ""} ... ${brl(i.total)}`).join("\n");
     const html = `<html><head><title>Pedido – ${p.nome}</title><style>body { font-family: monospace; font-size: ${fontSize}px;padding:16px;max-width:380px;margin:0 auto}h2{font-size:16px;text-align:center;margin-bottom:4px}.sub{text-align:center;font-size:12px;color:#555;margin-bottom:12px}hr{border:none;border-top:1px dashed #999;margin:10px 0}.row{display:flex;justify-content:space-between}.total{font-weight:bold;font-size:14px}</style></head><body><h2>🍕 PIZZARIA OLIVEIRA</h2><div class="sub">${data}</div><hr/><div><strong>Cliente:</strong> ${p.nome}</div><div><strong>Bairro:</strong> ${p.bairro}</div><div><strong>Endereço:</strong> ${p.rua}${p.complemento ? ` — ${p.complemento}` : ""}</div><div><strong>Pagamento:</strong> ${p.pagamento}</div><hr/><div><strong>Itens:</strong></div><pre style="margin:6px 0">${itens}</pre><hr/><div class="row"><span>Subtotal</span><span>${brl(p.subtotal)}</span></div><div class="row"><span>Taxa (${p.bairro})</span><span>${brl(p.taxa)}</span></div><div class="row total"><span>TOTAL</span><span>${brl(p.total)}</span></div>${p.obsGeral ? `<hr/><div><strong>Obs:</strong> ${p.obsGeral}</div>` : ""}<hr/><div style="text-align:center;font-size:11px;margin-top:8px">Obrigado pela preferência! 🍕</div></body></html>`;
