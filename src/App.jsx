@@ -374,15 +374,6 @@ function AbaPedidos({ mostrarToast }) {
     if (win) { win.document.write(html); win.document.close(); win.focus(); win.print(); }
   }
 
-  async function imprimirPedido(p) {
-  const fontSize = config.fontImpressao || 13;
-    const indice = await loadData(PEDIDOS_INDEX_KEY, []);
-    await Promise.all((indice || []).map((id) => deleteData(PEDIDOS_PREFIX + id)));
-    await saveData(PEDIDOS_INDEX_KEY, []);
-    setPedidos([]); setLimpando(false);
-    mostrarToast("🗑️ Histórico apagado");
-  }
-
   return (
     <div>
       <h2 style={styles.h2}>Pedidos Recebidos <button style={{ ...styles.btnSecSmall, marginLeft: "auto" }} onClick={carregarPedidos}>⟳ Atualizar</button></h2>
